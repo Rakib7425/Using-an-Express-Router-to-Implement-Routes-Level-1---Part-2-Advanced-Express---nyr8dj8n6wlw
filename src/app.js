@@ -62,6 +62,11 @@ router.post("/api/v1/product", (req, res) => {
 					product: newProduct,
 				},
 			});
+		} else {
+			res.status(400).send({
+				message: "Error creating product",
+				status: "Error",
+			});
 		}
 	} catch (error) {
 		res.status(400).json(error);
