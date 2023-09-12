@@ -55,7 +55,12 @@ router.post("/api/v1/product", (req, res) => {
 		product.push(newProduct);
 
 		const fulfilled = saveDataToDatabase(product);
-		if (!fulfilled || !title || !price) {
+		if (!title || !price) {
+			res.status(404).send({
+				message: "Title and price are required",
+				status: "Error",
+			});
+		} else if (!fulfilled) {
 			res.status(400).send({
 				message: "Error creating product",
 				status: "Error",
@@ -69,7 +74,10 @@ router.post("/api/v1/product", (req, res) => {
 			});
 		}
 	} catch (error) {
-		res.status(400).json(error);
+		res.status(400).send({
+			message: "Error creating product",
+			status: "Error",
+		});
 	}
 });
 
