@@ -55,17 +55,17 @@ router.post("/api/v1/product", (req, res) => {
 		product.push(newProduct);
 
 		const fulfilled = saveDataToDatabase(product);
-		if (fulfilled) {
+		if (!fulfilled || !title || !price) {
+			res.status(400).send({
+				message: "Error creating product",
+				status: "Error",
+			});
+		} else {
 			res.status(200).send({
 				status: "success",
 				data: {
 					product: newProduct,
 				},
-			});
-		} else {
-			res.status(400).send({
-				message: "Error creating product",
-				status: "Error",
 			});
 		}
 	} catch (error) {
