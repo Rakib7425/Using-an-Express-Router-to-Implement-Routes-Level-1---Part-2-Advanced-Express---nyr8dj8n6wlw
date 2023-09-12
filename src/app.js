@@ -1,36 +1,71 @@
-const fs = require('fs');
-const express = require('express');
-const app = express();
-//Aim: With the help of router, get all the product with router.GET request and create a product with router.POST request
-
-//middleware
-//write router middleware here
+const fs = require("fs");
+const express = require("express");
+const router = express.Router();
 
 //Including product.json file
-const product = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/product.json`)
-);
+const product = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/product.json`));
 
 // Defining The Router
 // Get all the products
-router.get('/api/v1/product', (req, res) => {
-  try {
-    //Write your code here
-  } catch (error) {
-    res.status(400).json(error);
-  }
+router.get("/api/v1/product", (req, res) => {
+	try {
+		//Write your code here
+		res.status(200).send({
+			status: "success",
+			results: product.length,
+			data: {
+				product,
+			},
+		});
+	} catch (error) {
+		res.status(400).json(error);
+	}
 });
+
+async function saveDataToDatabase(data) {
+	return new Promise((resolve, reject) => {
+		const jsonData = JSON.stringify(data);
+
+		fs.writeFile("./product.json", jsonData, (err) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve();
+			}
+		});
+	});
+}
 
 //Create a new Product
-router.post('/api/v1/product', (req, res) => {
-  try {
-    //Write your code here
-  } catch (error) {
-    res.status(400).json(error);
-  }
+router.post("/api/v1/product", (req, res) => {
+	try {
+		//Write your code here
+		let length = product.length;
+		let lastProduct = product[length - 1];
+		let newId = lastProduct.id + 1;
+		let { title, price } = req.body;
+		// console.log(newId, lastProduct);
+
+		const newProduct = {
+			id: newId,
+			title,
+			price,
+		};
+
+		product.push(newProduct);
+
+		const fulfilled = saveDataToDatabase(product);
+		if (fulfilled) {
+			res.status(200).send({
+				status: "success",
+				data: {
+					product: newProduct,
+				},
+			});
+		}
+	} catch (error) {
+		res.status(400).json(error);
+	}
 });
 
-//Registering our Router
-//Write here to register router
-
-module.exports = app;
+module.exports = router;
