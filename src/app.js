@@ -50,27 +50,22 @@ router.post("/", (req, res) => {
 			title,
 			price,
 		};
+
 		if (!title || !price) {
 			res.status(404).send({
 				message: "Title and price are required",
 				status: "Error",
 			});
-		} else if ((price, title)) {
+		} else if (price && title) {
 			product.push(newProduct);
-			const fulfilled = saveDataToDatabase(product);
-			if (fulfilled) {
-				res.status(200).send({
-					status: "success",
-					data: {
-						product: newProduct,
-					},
-				});
-			} else if (!fulfilled) {
-				res.status(400).send({
-					message: "Error creating product",
-					status: "Error",
-				});
-			}
+			saveDataToDatabase(product);
+
+			res.status(200).send({
+				status: "success",
+				data: {
+					product: newProduct,
+				},
+			});
 		}
 	} catch (error) {
 		res.status(400).send({
@@ -79,6 +74,7 @@ router.post("/", (req, res) => {
 		});
 	}
 });
+
 
 
 
