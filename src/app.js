@@ -7,7 +7,7 @@ const product = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/product.jso
 
 // Defining The Router
 // Get all the products
-router.get("/api/v1/product", (req, res) => {
+router.get("/", (req, res) => {
 	try {
 		//Write your code here
 		res.status(200).send({
@@ -37,7 +37,7 @@ async function saveDataToDatabase(data) {
 }
 
 //Create a new Product
-router.post("/api/v1/product", (req, res) => {
+router.post("/", (req, res) => {
 	try {
 		//Write your code here
 		let newId = product[product.length - 1].id + 1;
@@ -50,27 +50,27 @@ router.post("/api/v1/product", (req, res) => {
 			title,
 			price,
 		};
-
-		product.push(newProduct);
-
-		const fulfilled = saveDataToDatabase(product);
 		if (!title || !price) {
 			res.status(404).send({
 				message: "Title and price are required",
 				status: "Error",
 			});
-		} else if (!fulfilled) {
-			res.status(400).send({
-				message: "Error creating product",
-				status: "Error",
-			});
-		} else {
-			res.status(200).send({
-				status: "success",
-				data: {
-					product: newProduct,
-				},
-			});
+		} else if ((price, title)) {
+			product.push(newProduct);
+			const fulfilled = saveDataToDatabase(product);
+			if (fulfilled) {
+				res.status(200).send({
+					status: "success",
+					data: {
+						product: newProduct,
+					},
+				});
+			} else if (!fulfilled) {
+				res.status(400).send({
+					message: "Error creating product",
+					status: "Error",
+				});
+			}
 		}
 	} catch (error) {
 		res.status(400).send({
@@ -79,6 +79,7 @@ router.post("/api/v1/product", (req, res) => {
 		});
 	}
 });
+
 
 
 module.exports = router;
