@@ -14,4 +14,4 @@ app.use("/api/v1/product", productRoute);
 
 dotenv.config();
 
-app.listen(3000, () => console.log("Server running......"));
+app.listen(3000, () => console.log("https://expert-dollop-wqq65gg94v7c94w-3000.app.github.dev/", "OR  3000"));
