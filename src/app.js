@@ -26,7 +26,7 @@ async function saveDataToDatabase(data) {
 	return new Promise((resolve, reject) => {
 		const jsonData = JSON.stringify(data);
 
-		fs.writeFile("./product.json", jsonData, (err) => {
+		fs.writeFile(`${__dirname}/../dev-data/product.json`, jsonData, (err) => {
 			if (err) {
 				reject(err);
 			} else {
